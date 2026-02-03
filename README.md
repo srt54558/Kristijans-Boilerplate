@@ -1,4 +1,4 @@
-# Silex - B2C SaaS Boilerplate
+# Kristijans SaaS Boilerplate
 
 Powered by SvelteKit, Convex, Better Auth, Polar, and UploadThing.
 
