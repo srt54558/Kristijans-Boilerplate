@@ -5,6 +5,9 @@
   import { UploadButton } from "@uploadthing/svelte";
   import { authClient } from "$lib/auth-client";
   import { goto } from "$app/navigation";
+  import { base } from "$app/paths";
+  import { Button } from "$lib/components/ui/button";
+  import * as Card from "$lib/components/ui/card";
 
   const auth = useAuth();
   const isAuthenticated = $derived(auth.isAuthenticated);
@@ -15,48 +18,63 @@
 
   async function signOut() {
       await authClient.signOut();
-      goto('/signin');
+      await goto(`${base}/signin`);
   }
 </script>
 
-<div class="min-h-screen bg-gray-50 p-8">
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900 p-8">
   {#if isLoading}
-    <p>Loading...</p>
+    <p class="text-center">Loading...</p>
   {:else if !isAuthenticated}
     <div class="text-center">
         <p class="mb-4">You must be logged in to view this page.</p>
-        <a href="/signin" class="text-blue-600 underline">Sign In</a>
+        <Button href="{base}/signin" variant="link">Sign In</Button>
     </div>
   {:else}
-    <div class="max-w-4xl mx-auto bg-white rounded-lg shadow p-6">
-        <h1 class="text-2xl font-bold mb-6">Dashboard</h1>
-
-        <div class="mb-8">
-            <h2 class="text-xl font-semibold mb-2">User Profile</h2>
-            <pre class="bg-gray-100 p-4 rounded overflow-auto">{JSON.stringify(user, null, 2)}</pre>
+    <div class="max-w-4xl mx-auto space-y-6">
+        <div class="flex justify-between items-center">
+            <h1 class="text-3xl font-bold">Dashboard</h1>
+            <Button variant="destructive" onclick={signOut}>Sign Out</Button>
         </div>
 
-        <div class="mb-8">
-             <h2 class="text-xl font-semibold mb-2">Upload File</h2>
-             <UploadButton
-                {...{ endpoint: "imageUploader" } as any}
-                onClientUploadComplete={(res: any) => {
-                    console.log("Files: ", res);
-                    alert("Upload Completed");
-                }}
-                onUploadError={(error: Error) => {
-                    alert(`ERROR! ${error.message}`);
-                }}
-             />
-        </div>
+        <Card.Root>
+            <Card.Header>
+                <Card.Title>User Profile</Card.Title>
+            </Card.Header>
+            <Card.Content>
+                <pre class="bg-muted p-4 rounded-md overflow-auto text-xs">{JSON.stringify(user, null, 2)}</pre>
+            </Card.Content>
+        </Card.Root>
 
-        <div class="mb-8">
-            <h2 class="text-xl font-semibold mb-2">Subscription</h2>
-            <a href="/checkout" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">Subscribe</a>
-            <a href="/portal" class="ml-4 px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">Manage Subscription</a>
-        </div>
+        <Card.Root>
+            <Card.Header>
+                <Card.Title>File Upload</Card.Title>
+            </Card.Header>
+            <Card.Content>
+                 <!-- @ts-ignore -->
+                 <UploadButton
+                    {...{ endpoint: "imageUploader" } as any}
+                    onClientUploadComplete={(res: any) => {
+                        console.log("Files: ", res);
+                        alert("Upload Completed");
+                    }}
+                    onUploadError={(error: Error) => {
+                        alert(`ERROR! ${error.message}`);
+                    }}
+                 />
+            </Card.Content>
+        </Card.Root>
 
-        <button onclick={signOut} class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">Sign Out</button>
+        <Card.Root>
+            <Card.Header>
+                <Card.Title>Subscription</Card.Title>
+                <Card.Description>Manage your subscription and billing</Card.Description>
+            </Card.Header>
+            <Card.Content class="flex gap-4">
+                <Button href="{base}/checkout" variant="default">Subscribe</Button>
+                <Button href="{base}/portal" variant="secondary">Manage Subscription</Button>
+            </Card.Content>
+        </Card.Root>
     </div>
   {/if}
 </div>

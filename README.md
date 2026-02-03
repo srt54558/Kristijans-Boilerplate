@@ -61,6 +61,7 @@ Powered by SvelteKit, Convex, Better Auth, Polar, and UploadThing.
 - **Payments**: Polar
 - **File Upload**: UploadThing
 - **Styling**: Tailwind CSS
+- **UI Components**: Shadcn-Svelte
 
 ## Deployment
 
