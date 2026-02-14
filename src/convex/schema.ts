@@ -1,6 +1,5 @@
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
-import { authTables } from "@convex-dev/better-auth/server";
 
 export default defineSchema({
   users: defineTable({
@@ -10,6 +9,8 @@ export default defineSchema({
     emailVerified: v.boolean(),
     polarCustomerId: v.optional(v.string()),
     subscriptionStatus: v.optional(v.string()),
-  }).index("by_email", ["email"]),
-  ...authTables,
+    authUserId: v.string(),
+  })
+    .index("by_email", ["email"])
+    .index("by_auth_user_id", ["authUserId"]),
 });
